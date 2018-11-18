@@ -326,7 +326,7 @@ PlasmaCore.Dialog {
 
                     dragEnabled: (index == 0)
 
-                    model: searching ? runnerModel.modelForRow(0) : rootModel.modelForRow(0).modelForRow(0)
+                    model: searching ? runnerModel.modelForRow(0) : rootModel.modelForRow(0).modelForRow(index)
 
                     onCurrentIndexChanged: {
                         if (currentIndex != -1 && !searching) {
