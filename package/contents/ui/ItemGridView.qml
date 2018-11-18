@@ -1,21 +1,22 @@
-/***************************************************************************
- *   Copyright (C) 2015 by Eike Hein <hein@kde.org>                        *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
+/*
+*  Copyright 2018 Juha Nuutinen <juha.nuutinen@protonmail.com>
+*
+*  This file is a part of Minimal Menu.
+*  Minimal Menu is forked from Simple menu (https://github.com/KDE/plasma-simplemenu)
+*
+*  Takeoff is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of
+*  the License, or (at your option) any later version.
+*
+*  Takeoff is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 import QtQuick 2.4
 
@@ -113,7 +114,7 @@ FocusScope {
             var cPos = mapToItem(gridView.contentItem, event.x, event.y);
             var item = gridView.itemAt(cPos.x, cPos.y);
 
-            if (item && item != kicker.dragSource && kicker.dragSource && kicker.dragSource.parent == gridView.contentItem) {
+            if (item && item !== kicker.dragSource && kicker.dragSource && kicker.dragSource.parent == gridView.contentItem) {
                 item.GridView.view.model.moveRow(dragSource.itemIndex, item.itemIndex);
             }
 
@@ -282,7 +283,7 @@ FocusScope {
                             return;
                         }
 
-                        if (currentCol() != 0) {
+                        if (currentCol() !== 0) {
                             event.accepted = true;
                             moveCurrentIndexLeft();
                         } else {
@@ -298,7 +299,7 @@ FocusScope {
 
                         var columns = Math.floor(width / cellWidth);
 
-                        if (currentCol() != columns - 1 && currentIndex != count - 1) {
+                        if (currentCol() !== columns - 1 && currentIndex != count - 1) {
                             event.accepted = true;
                             moveCurrentIndexRight();
                         } else {
@@ -312,7 +313,7 @@ FocusScope {
                             return;
                         }
 
-                        if (currentRow() != 0) {
+                        if (currentRow() !== 0) {
                             event.accepted = true;
                             moveCurrentIndexUp();
                             positionViewAtIndex(currentIndex, GridView.Contain);

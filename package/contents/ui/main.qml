@@ -1,21 +1,22 @@
-/***************************************************************************
- *   Copyright (C) 2014-2015 by Eike Hein <hein@kde.org>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
+/*
+*  Copyright 2018 Juha Nuutinen <juha.nuutinen@protonmail.com>
+*
+*  This file is a part of Minimal Menu.
+*  Minimal Menu is forked from Simple menu (https://github.com/KDE/plasma-simplemenu)
+*
+*  Takeoff is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of
+*  the License, or (at your option) any later version.
+*
+*  Takeoff is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 import QtQuick 2.0
 import QtQuick.Layouts 1.1
@@ -43,7 +44,6 @@ Item {
     property Item dragSource: null
 
     property QtObject globalFavorites: rootModel.favoritesModel
-    property QtObject systemFavorites: rootModel.systemFavoritesModel
 
     function action_menuedit() {
         processRunner.runMenuEditor();
@@ -93,12 +93,6 @@ Item {
             favoritesModel.maxFavorites = pageSize;
         }
 
-        onSystemFavoritesModelChanged: {
-            systemFavoritesModel.enabled = false;
-            systemFavoritesModel.favorites = plasmoid.configuration.favoriteSystemActions;
-            systemFavoritesModel.maxFavorites = 6;
-        }
-
         Component.onCompleted: {
             if ("initForClient" in favoritesModel) {
                 favoritesModel.initForClient("org.kde.plasma.kicker.favorites.instance-" + plasmoid.id)
@@ -125,22 +119,10 @@ Item {
     }
 
     Connections {
-        target: systemFavorites
-
-        onFavoritesChanged: {
-            plasmoid.configuration.favoriteSystemActions = target.favorites;
-        }
-    }
-
-    Connections {
         target: plasmoid.configuration
 
         onFavoriteAppsChanged: {
             globalFavorites.favorites = plasmoid.configuration.favoriteApps;
-        }
-
-        onFavoriteSystemActionsChanged: {
-            systemFavorites.favorites = plasmoid.configuration.favoriteSystemActions;
         }
     }
 
@@ -148,7 +130,7 @@ Item {
         id: runnerModel
 
         favoritesModel: globalFavorites
-        runners: plasmoid.configuration.useExtraRunners ? new Array("services").concat(plasmoid.configuration.extraRunners) : "services"
+        runners: plasmoid.configuration.useExtraRunners ? ["services"].concat(plasmoid.configuration.extraRunners) : "services"
         appletInterface: plasmoid
 
         deleteWhenEmpty: false

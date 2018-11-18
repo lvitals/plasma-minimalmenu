@@ -1,22 +1,22 @@
-/***************************************************************************
- *   Copyright (C) 2013 by Aurélien Gâteau <agateau@kde.org>               *
- *   Copyright (C) 2014-2015 by Eike Hein <hein@kde.org>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
+/*
+*  Copyright 2018 Juha Nuutinen <juha.nuutinen@protonmail.com>
+*
+*  This file is a part of Minimal Menu.
+*  Minimal Menu is forked from Simple menu (https://github.com/KDE/plasma-simplemenu)
+*
+*  Takeoff is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of
+*  the License, or (at your option) any later version.
+*
+*  Takeoff is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 import QtQuick 2.0
 
@@ -28,7 +28,7 @@ Item {
     property QtObject menu
     property Item visualParent
     property variant actionList
-    property bool opened: menu ? (menu.status != PlasmaComponents.DialogStatus.Closed) : false
+    property bool opened: menu ? (menu.status !== PlasmaComponents.DialogStatus.Closed) : false
 
     signal actionClicked(string actionId, variant actionArgument)
     signal closed
@@ -123,9 +123,9 @@ Item {
             property variant actionItem
 
             text      : actionItem.text ? actionItem.text : ""
-            enabled   : actionItem.type != "title" && ("enabled" in actionItem ? actionItem.enabled : true)
-            separator : actionItem.type == "separator"
-            section   : actionItem.type == "title"
+            enabled   : actionItem.type !== "title" && ("enabled" in actionItem ? actionItem.enabled : true)
+            separator : actionItem.type === "separator"
+            section   : actionItem.type === "title"
             icon      : actionItem.icon ? actionItem.icon : null
             checkable : actionItem.checkable ? actionItem.checkable : false
             checked   : actionItem.checked ? actionItem.checked : false

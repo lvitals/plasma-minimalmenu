@@ -1,22 +1,22 @@
-/***************************************************************************
- *   Copyright (C) 2013 by Aurélien Gâteau <agateau@kde.org>               *
- *   Copyright (C) 2013-2015 by Eike Hein <hein@kde.org>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
+/*
+*  Copyright 2018 Juha Nuutinen <juha.nuutinen@protonmail.com>
+*
+*  This file is a part of Minimal Menu.
+*  Minimal Menu is forked from Simple menu (https://github.com/KDE/plasma-simplemenu)
+*
+*  Takeoff is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of
+*  the License, or (at your option) any later version.
+*
+*  Takeoff is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 function fillActionMenu(actionMenu, actionList, favoriteModel, favoriteId) {
     // Accessing actionList can be a costly operation, so we don't
@@ -39,21 +39,20 @@ function fillActionMenu(actionMenu, actionList, favoriteModel, favoriteId) {
 }
 
 function createFavoriteActions(favoriteModel, favoriteId) {
-    if (favoriteModel === null || !favoriteModel.enabled || favoriteId == null) {
+    if (favoriteModel === null || !favoriteModel.enabled || favoriteId === null) {
         return null;
     }
 
+    var action = {};
     if ("initForClient" in favoriteModel) {
         var activities = favoriteModel.activities.runningActivities;
 
         if (activities.length <= 1) {
-            var action = {};
-
             if (favoriteModel.isFavorite(favoriteId)) {
                 action.text = i18n("Remove from Favorites");
                 action.icon = "list-remove";
                 action.actionId = "_kicker_favorite_remove";
-            } else if (favoriteModel.maxFavorites == -1 || favoriteModel.count < favoriteModel.maxFavorites) {
+            } else if (favoriteModel.maxFavorites === -1 || favoriteModel.count < favoriteModel.maxFavorites) {
                 action.text = i18n("Add to Favorites");
                 action.icon = "bookmark-new";
                 action.actionId = "_kicker_favorite_add";
@@ -146,13 +145,11 @@ function createFavoriteActions(favoriteModel, favoriteId) {
             }];
         }
     } else {
-        var action = {};
-
         if (favoriteModel.isFavorite(favoriteId)) {
             action.text = i18n("Remove from Favorites");
             action.icon = "list-remove";
             action.actionId = "_kicker_favorite_remove";
-        } else if (favoriteModel.maxFavorites == -1 || favoriteModel.count < favoriteModel.maxFavorites) {
+        } else if (favoriteModel.maxFavorites === -1 || favoriteModel.count < favoriteModel.maxFavorites) {
             action.text = i18n("Add to Favorites");
             action.icon = "bookmark-new";
             action.actionId = "_kicker_favorite_add";
@@ -174,6 +171,9 @@ function triggerAction(model, index, actionId, actionArgument) {
     if (startsWith(actionId, "_kicker_favorite_")) {
         handleFavoriteAction(actionId, actionArgument);
         return;
+    } else if (startsWith(actionId, "_kicker_hide")) { //TODO:
+        handleHideAction();
+        return;
     }
 
     var closeRequested = model.trigger(index, actionId, actionArgument);
@@ -193,37 +193,41 @@ function handleFavoriteAction(actionId, actionArgument) {
 
     console.log(actionId);
 
-    if (favoriteModel === null || favoriteId == null) {
+    if (favoriteModel === null || favoriteId === null) {
         return null;
     }
 
     if ("initForClient" in favoriteModel) {
-        if (actionId == "_kicker_favorite_remove") {
+        if (actionId === "_kicker_favorite_remove") {
             console.log("Removing from all activities");
             favoriteModel.removeFavoriteFrom(favoriteId, ":any");
 
-        } else if (actionId == "_kicker_favorite_add") {
+        } else if (actionId === "_kicker_favorite_add") {
             console.log("Adding to global activity");
             favoriteModel.addFavoriteTo(favoriteId, ":global");
 
-        } else if (actionId == "_kicker_favorite_remove_from_activity") {
+        } else if (actionId === "_kicker_favorite_remove_from_activity") {
             console.log("Removing from a specific activity");
             favoriteModel.removeFavoriteFrom(favoriteId, actionArgument.favoriteActivity);
 
-        } else if (actionId == "_kicker_favorite_add_to_activity") {
+        } else if (actionId === "_kicker_favorite_add_to_activity") {
             console.log("Adding to another activity");
             favoriteModel.addFavoriteTo(favoriteId, actionArgument.favoriteActivity);
 
-        } else if (actionId == "_kicker_favorite_set_to_activity") {
+        } else if (actionId === "_kicker_favorite_set_to_activity") {
             console.log("Removing the item from the favourites, and re-adding it just to be on a specific activity");
             favoriteModel.setFavoriteOn(favoriteId, actionArgument.favoriteActivity);
 
         }
     } else {
-        if (actionId == "_kicker_favorite_remove") {
+        if (actionId === "_kicker_favorite_remove") {
             favoriteModel.removeFavorite(favoriteId);
-        } else if (actionId == "_kicker_favorite_add") {
+        } else if (actionId === "_kicker_favorite_add") {
             favoriteModel.addFavorite(favoriteId);
         }
     }
+}
+
+function handleHideAction() {
+    plasmoid.runCommand("qdbus", ["org.kde.plasma", "/kickoff", "reloadMenu"]);
 }

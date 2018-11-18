@@ -1,22 +1,22 @@
-/***************************************************************************
- *   Copyright (C) 2014 by Weng Xuetian <wengxt@gmail.com>
- *   Copyright (C) 2013-2017 by Eike Hein <hein@kde.org>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
- ***************************************************************************/
+/*
+*  Copyright 2018 Juha Nuutinen <juha.nuutinen@protonmail.com>
+*
+*  This file is a part of Minimal Menu.
+*  Minimal Menu is forked from Simple menu (https://github.com/KDE/plasma-simplemenu)
+*
+*  Takeoff is free software; you can redistribute it and/or
+*  modify it under the terms of the GNU General Public License as
+*  published by the Free Software Foundation; either version 2 of
+*  the License, or (at your option) any later version.
+*
+*  Takeoff is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 import QtQuick 2.4
 import QtQuick.Layouts 1.1
@@ -76,18 +76,14 @@ PlasmaCore.Dialog {
 
     function reset() {
         if (!searching) {
-            if (filterListScrollArea.visible) {
-                filterList.currentIndex = 0;
-            } else {
-                pageList.model = rootModel.modelForRow(0);
-                paginationBar.model = rootModel.modelForRow(0);
-            }
+            pageList.model = rootModel.modelForRow(0);
+            paginationBar.model = rootModel.modelForRow(0);
         }
 
         searchField.text = "";
 
         pageListScrollArea.focus = true;
-        pageList.currentIndex = 0;
+        pageList.currentIndex = plasmoid.configuration.showFavoritesFirst ? 0 : 1;
         pageList.currentItem.itemGrid.currentIndex = -1;
     }
 
@@ -105,25 +101,28 @@ PlasmaCore.Dialog {
         // Fall back to bottom-left of screen area when the applet is on the desktop or floating.
         var x = offset;
         var y = screen.height - height - offset;
+        var appletTopLeft;
+        var horizMidPoint;
+        var vertMidPoint;
 
-        if (plasmoid.location == PlasmaCore.Types.BottomEdge) {
-            var horizMidPoint = screen.x + (screen.width / 2);
-            var appletTopLeft = parent.mapToGlobal(0, 0);
+        if (plasmoid.location === PlasmaCore.Types.BottomEdge) {
+            horizMidPoint = screen.x + (screen.width / 2);
+            appletTopLeft = parent.mapToGlobal(0, 0);
             x = (appletTopLeft.x < horizMidPoint) ? screen.x + offset : (screen.x + screen.width) - width - offset;
             y = screen.height - height - offset - panelSvg.margins.top;
-        } else if (plasmoid.location == PlasmaCore.Types.TopEdge) {
-            var horizMidPoint = screen.x + (screen.width / 2);
+        } else if (plasmoid.location === PlasmaCore.Types.TopEdge) {
+            horizMidPoint = screen.x + (screen.width / 2);
             var appletBottomLeft = parent.mapToGlobal(0, parent.height);
             x = (appletBottomLeft.x < horizMidPoint) ? screen.x + offset : (screen.x + screen.width) - width - offset;
             y = parent.height + panelSvg.margins.bottom + offset;
-        } else if (plasmoid.location == PlasmaCore.Types.LeftEdge) {
-            var vertMidPoint = screen.y + (screen.height / 2);
-            var appletTopLeft = parent.mapToGlobal(0, 0);
+        } else if (plasmoid.location === PlasmaCore.Types.LeftEdge) {
+            vertMidPoint = screen.y + (screen.height / 2);
+            appletTopLeft = parent.mapToGlobal(0, 0);
             x = parent.width + panelSvg.margins.right + offset;
             y = (appletTopLeft.y < vertMidPoint) ? screen.y + offset : (screen.y + screen.height) - height - offset;
-        } else if (plasmoid.location == PlasmaCore.Types.RightEdge) {
-            var vertMidPoint = screen.y + (screen.height / 2);
-            var appletTopLeft = parent.mapToGlobal(0, 0);
+        } else if (plasmoid.location === PlasmaCore.Types.RightEdge) {
+            vertMidPoint = screen.y + (screen.height / 2);
+            appletTopLeft = parent.mapToGlobal(0, 0);
             x = appletTopLeft.x - panelSvg.margins.left - offset - width;
             y = (appletTopLeft.y < vertMidPoint) ? screen.y + offset : (screen.y + screen.height) - height - offset;
         }
@@ -133,58 +132,75 @@ PlasmaCore.Dialog {
 
 
     FocusScope {
-        Layout.minimumWidth: (cellSize * 6) + Math.max(systemFavoritesGrid.width, filterListScrollArea.width) + units.smallSpacing
-        Layout.maximumWidth: (cellSize * 6) + Math.max(systemFavoritesGrid.width, filterListScrollArea.width) + units.smallSpacing
-        Layout.minimumHeight: (cellSize * 4) + searchField.height + paginationBar.height + (2 * units.smallSpacing)
-        Layout.maximumHeight: (cellSize * 4) + searchField.height + paginationBar.height + (2 * units.smallSpacing)
+        Layout.minimumWidth: (cellSize * 6) + (2 * units.largeSpacing)
+        Layout.maximumWidth: (cellSize * 6) + (2 * units.largeSpacing)
+        Layout.minimumHeight: (cellSize * 4) + searchField.height + paginationBar.height + (3 * units.largeSpacing)
+        Layout.maximumHeight: (cellSize * 4) + searchField.height + paginationBar.height + (3 * units.largeSpacing)
 
         focus: true
 
     PlasmaExtras.Heading {
-        id: dummyHeading
-
-        visible: false
-
-        width: 0
-
+        id: heading
+        anchors.left: parent.left
+        anchors.leftMargin: units.largeSpacing
+        anchors.top: parent.top
+        anchors.topMargin: units.smallSpacing
         level: 5
+        text: i18n("Applications")
     }
 
     TextMetrics {
         id: headingMetrics
-
-        font: dummyHeading.font
+        font: heading.font
     }
 
+    PlasmaComponents.Label {
+        id: searchLabel
+        anchors.left: parent.left
+        anchors.leftMargin: (2 * units.largeSpacing + heading.width)
+        anchors.right: parent.right
+        anchors.rightMargin: units.largeSpacing
+        anchors.baseline: heading.baseline
+        text: i18n("Type to search...")
+        opacity: 0.5
+    }
+    
     PlasmaComponents.TextField {
         id: searchField
-
-        anchors.top: parent.top
         anchors.left: parent.left
-        anchors.right: systemFavoritesGrid.left
-        anchors.rightMargin: units.smallSpacing
-
-        width: parent.width
-
-        placeholderText: i18n("Search...")
+        anchors.leftMargin: (2 * units.largeSpacing + heading.width)
+        anchors.right: parent.right
+        anchors.rightMargin: units.largeSpacing
+        anchors.baseline: heading.baseline
+        placeholderText: i18n("Type to search...")
         clearButtonShown: true
-
+        visible: false
+        
         onTextChanged: {
+            if (visible == false) {
+                visible = true
+                searchLabel.visible = false
+            }
             runnerModel.query = text;
         }
 
         Keys.onPressed: {
-            if (event.key == Qt.Key_Down) {
+            if (event.key === Qt.Key_Down) {
                 pageList.currentItem.itemGrid.focus = true;
                 pageList.currentItem.itemGrid.currentIndex = 0;
-            } else if (event.key == Qt.Key_Right) {
-                systemFavoritesGrid.tryActivate(0, 0);
-            } else if (event.key == Qt.Key_Return || event.key == Qt.Key_Enter) {
-                if (text != "" && pageList.currentItem.itemGrid.count > 0) {
+            } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                if (text != "" && pageList.currentItem != null && pageList.currentItem.itemGrid.count > 0) {
                     pageList.currentItem.itemGrid.tryActivate(0, 0);
                     pageList.currentItem.itemGrid.model.trigger(0, "", null);
                     root.visible = false;
                 }
+            }
+        }
+        
+        onEditingFinished: {
+            if (text == "") {
+                visible = false
+                searchLabel.visible = true
             }
         }
 
@@ -207,59 +223,20 @@ PlasmaCore.Dialog {
         }
     }
 
-    ItemGridView {
-        id: systemFavoritesGrid
-
-        anchors {
-            top: parent.top
-            right: parent.right
-        }
-
-        width: cellWidth * 4
-        height: searchField.height
-
-        cellWidth: height
-        cellHeight: height
-
-        iconSize: height - units.smallSpacing
-
-        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-        verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
-        dragEnabled: true
-        showLabels: false
-
-        model: systemFavorites
-
-        onCurrentIndexChanged: {
-            focus = true;
-        }
-
-        onKeyNavLeft: {
-            currentIndex = -1;
-            searchField.focus = true;
-        }
-
-        onKeyNavDown: {
-            pageListScrollArea.focus = true;
-
-            if (pageList.currentItem) {
-                pageList.currentItem.itemGrid.tryActivate(0, 0);
-            }
-        }
-    }
-
     PlasmaExtras.ScrollArea {
         id: pageListScrollArea
 
         anchors {
             left: parent.left
+            leftMargin: units.largeSpacing
             top: searchField.bottom
-            topMargin: units.smallSpacing
+            topMargin: units.largeSpacing
+            right: parent.right
+            rightMargin: units.largeSpacing
             bottom: paginationBar.top
-            bottomMargin: units.smallSpacing
         }
 
+        frameVisible: false
         width: (cellSize * 6)
 
         focus: true
@@ -276,7 +253,7 @@ PlasmaCore.Dialog {
             snapMode: ListView.SnapOneItem
             cacheBuffer: (cellSize * 6) * count
 
-            currentIndex: 0
+            currentIndex: plasmoid.configuration.showFavoritesFirst ? 0 : 1
 
             model: rootModel.modelForRow(0)
 
@@ -293,7 +270,7 @@ PlasmaCore.Dialog {
             }
 
             onModelChanged: {
-                currentIndex = 0;
+                currentIndex = plasmoid.configuration.showFavoritesFirst ? 0 : 1;
             }
 
             onFlickingChanged: {
@@ -310,19 +287,20 @@ PlasmaCore.Dialog {
             }
 
             function activateNextPrev(next) {
+                var newIndex;
                 if (next) {
-                    var newIndex = pageList.currentIndex + 1;
+                    newIndex = pageList.currentIndex + 1;
 
-                    if (newIndex == pageList.count) {
-                        newIndex = 0;
+                    if (newIndex === pageList.count) {
+                        newIndex = plasmoid.configuration.wrapScroll ? 0 : pageList.currentIndex;
                     }
 
                     pageList.currentIndex = newIndex;
                 } else {
-                    var newIndex = pageList.currentIndex - 1;
+                    newIndex = pageList.currentIndex - 1;
 
                     if (newIndex < 0) {
-                        newIndex = (pageList.count - 1);
+                        newIndex = plasmoid.configuration.wrapScroll ? pageList.count - 1 : pageList.currentIndex;
                     }
 
                     pageList.currentIndex = newIndex;
@@ -348,7 +326,7 @@ PlasmaCore.Dialog {
 
                     dragEnabled: (index == 0)
 
-                    model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(filterListScrollArea.visible ? filterList.currentIndex : 0).modelForRow(index)
+                    model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(0).modelForRow(index)
 
                     onCurrentIndexChanged: {
                         if (currentIndex != -1 && !searching) {
@@ -437,6 +415,7 @@ PlasmaCore.Dialog {
 
         anchors {
             bottom: parent.bottom
+            bottomMargin: units.largeSpacing
             horizontalCenter: parent.horizontalCenter
         }
 
@@ -519,187 +498,8 @@ PlasmaCore.Dialog {
         }
     }
 
-    PlasmaExtras.ScrollArea {
-        id: filterListScrollArea
-
-        anchors {
-            left: pageListScrollArea.right
-            leftMargin: units.smallSpacing
-            top: searchField.bottom
-            topMargin: units.smallSpacing
-            bottom: paginationBar.top
-            bottomMargin: units.smallSpacing
-        }
-
-        property int desiredWidth: 0
-
-        width: plasmoid.configuration.showFilterList ? desiredWidth : 0
-
-        enabled: !searching
-        visible: plasmoid.configuration.showFilterList
-
-        property alias currentIndex: filterList.currentIndex
-
-        opacity: root.visible ? (searching ? 0.30 : 1.0) : 0.3
-
-        Behavior on opacity { SmoothedAnimation { duration: units.longDuration; velocity: 0.01 } }
-
-        verticalScrollBarPolicy: (opacity == 1.0) ? Qt.ScrollBarAsNeeded : Qt.ScrollBarAlwaysOff
-
-        onEnabledChanged: {
-            if (!enabled) {
-                filterList.currentIndex = -1;
-            }
-        }
-
-        ListView {
-            id: filterList
-
-            focus: true
-
-            property bool allApps: false
-            property int eligibleWidth: width
-            property int hItemMargins: highlightItemSvg.margins.left + highlightItemSvg.margins.right
-            model: filterListScrollArea.visible ? rootModel : null
-
-            boundsBehavior: Flickable.StopAtBounds
-            snapMode: ListView.SnapToItem
-            spacing: 0
-            keyNavigationWraps: true
-
-            delegate: MouseArea {
-                id: item
-
-                property int textWidth: label.contentWidth
-                property int mouseCol
-
-                width: parent.width
-                height: label.paintedHeight + highlightItemSvg.margins.top + highlightItemSvg.margins.bottom
-
-                Accessible.role: Accessible.MenuItem
-                Accessible.name: model.display
-
-                acceptedButtons: Qt.LeftButton
-
-                hoverEnabled: true
-
-                onContainsMouseChanged: {
-                    if (!containsMouse) {
-                        updateCurrentItemTimer.stop();
-                    }
-                }
-
-                onPositionChanged: { // Lazy menu implementation.
-                    mouseCol = mouse.x;
-
-                    if (index == ListView.view.currentIndex) {
-                        updateCurrentItem();
-                    } else if ((index == ListView.view.currentIndex - 1) && mouse.y < (item.height - 6)
-                        || (index == ListView.view.currentIndex + 1) && mouse.y > 5) {
-
-                        if (mouse.x > ListView.view.eligibleWidth - 5) {
-                            updateCurrentItem();
-                        }
-                    } else if (mouse.x > ListView.view.eligibleWidth) {
-                        updateCurrentItem();
-                    }
-
-                    updateCurrentItemTimer.start();
-                }
-
-                function updateCurrentItem() {
-                    ListView.view.currentIndex = index;
-                    ListView.view.eligibleWidth = Math.min(width, mouseCol);
-                }
-
-                Timer {
-                    id: updateCurrentItemTimer
-
-                    interval: 50
-                    repeat: false
-
-                    onTriggered: parent.updateCurrentItem()
-                }
-
-                PlasmaExtras.Heading {
-                    id: label
-
-                    anchors {
-                        fill: parent
-                        leftMargin: highlightItemSvg.margins.left
-                        rightMargin: highlightItemSvg.margins.right
-                    }
-
-                    elide: Text.ElideRight
-                    wrapMode: Text.NoWrap
-                    opacity: 1.0
-
-                    level: 5
-
-                    text: model.display
-                }
-            }
-
-            highlight: PlasmaComponents.Highlight {
-                anchors {
-                    top: filterList.currentItem ? filterList.currentItem.top : undefined
-                    left: filterList.currentItem ? filterList.currentItem.left : undefined
-                    bottom: filterList.currentItem ? filterList.currentItem.bottom : undefined
-                }
-
-                opacity: filterListScrollArea.focus ? 1.0 : 0.7
-
-                width: (highlightItemSvg.margins.left
-                    + filterList.currentItem.textWidth
-                    + highlightItemSvg.margins.right
-                    + units.smallSpacing)
-
-                visible: filterList.currentItem
-            }
-
-            highlightFollowsCurrentItem: false
-            highlightMoveDuration: 0
-            highlightResizeDuration: 0
-
-            onCurrentIndexChanged: applyFilter()
-
-            onCountChanged: {
-                var width = 0;
-
-                for (var i = 0; i < rootModel.count; ++i) {
-                    headingMetrics.text = rootModel.labelForRow(i);
-
-                    if (headingMetrics.width > width) {
-                        width = headingMetrics.width;
-                    }
-                }
-
-                filterListScrollArea.desiredWidth = width + hItemMargins + units.gridUnit;
-            }
-
-            function applyFilter() {
-                if (filterListScrollArea.visible && !searching && currentIndex >= 0) {
-                    pageList.model = rootModel.modelForRow(currentIndex);
-                    paginationBar.model = pageList.model;
-                }
-            }
-
-            Keys.onPressed: {
-                if (event.key == Qt.Key_left) {
-                    event.accepted = true;
-
-                    var currentRow = Math.max(0, Math.ceil(currentItem.y / cellSize) - 1);
-
-                    if (pageList.currentItem) {
-                        pageList.currentItem.itemGrid.tryActivate(currentRow, 5);
-                    }
-                }
-            }
-        }
-    }
-
     Keys.onPressed: {
-        if (event.key == Qt.Key_Escape) {
+        if (event.key === Qt.Key_Escape) {
             event.accepted = true;
 
             if (searching) {
@@ -715,10 +515,10 @@ PlasmaCore.Dialog {
             return;
         }
 
-        if (event.key == Qt.Key_Backspace) {
+        if (event.key === Qt.Key_Backspace) {
             event.accepted = true;
             searchField.backspace();
-        } else if (event.text != "") {
+        } else if (event.text !== "") {
             event.accepted = true;
             searchField.appendText(event.text);
         }

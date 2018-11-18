@@ -17,7 +17,7 @@
     </entry>
 
     <entry name="showFilterList" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
 
     <entry name="appNameFormat" type="Int">
@@ -28,10 +28,7 @@
     </entry>
 
     <entry name="favoriteApps" type="StringList">
-      <default>preferred://browser,kontact.desktop,systemsettings.desktop,org.kde.dolphin.desktop,ktp-contactlist.desktop,org.kde.kate.desktop</default>
-    </entry>
-    <entry name="favoriteSystemActions" type="StringList">
-      <default>logout,lock-screen,reboot,shutdown</default>
+      <default></default>
     </entry>
     <entry name="hiddenApplications" type="StringList">
       <default></default>
@@ -54,6 +51,14 @@
     <entry name="favoritesPortedToKAstats" type="Bool">
       <label>Are the favorites ported to use KActivitiesStats to allow per-activity favorites</label>
       <default>false</default>
+    </entry>
+    
+    <entry name="showFavoritesFirst" type="Bool">
+        <default>false</default>
+    </entry>
+    
+    <entry name="wrapScroll" type="Bool">
+        <default>false</default>
     </entry>
   </group>
 </kcfg>
