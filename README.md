@@ -1,7 +1,7 @@
 # Minimal Menu
 
 <p align="center">
-    <img src="assets/banner.png" alt="Functional app banner">
+    <img src="assets/0.1.0-crop.jpg" alt="Minimal menu image">
 </p>
 
 ## A minimal application menu for KDE Plasma
