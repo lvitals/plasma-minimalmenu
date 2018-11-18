@@ -1,0 +1,3 @@
+Changes in 0.1.1:
+* Fixed queried application not beind launched after pressing
+  enter when the setting "Show favorites first" is checked.
