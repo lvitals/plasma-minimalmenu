@@ -178,8 +178,8 @@ PlasmaCore.Dialog {
         
         onTextChanged: {
             if (visible == false) {
-                visible = true
-                searchLabel.visible = false
+                visible = true;
+                searchLabel.visible = false;
             }
             runnerModel.query = text;
         }
@@ -189,7 +189,7 @@ PlasmaCore.Dialog {
                 pageList.currentItem.itemGrid.focus = true;
                 pageList.currentItem.itemGrid.currentIndex = 0;
             } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                if (text != "" && pageList.currentItem != null && pageList.currentItem.itemGrid.count > 0) {
+                if (text != "" && pageList.currentItem.itemGrid.count > 0) {
                     pageList.currentItem.itemGrid.tryActivate(0, 0);
                     pageList.currentItem.itemGrid.model.trigger(0, "", null);
                     root.visible = false;
@@ -199,8 +199,8 @@ PlasmaCore.Dialog {
         
         onEditingFinished: {
             if (text == "") {
-                visible = false
-                searchLabel.visible = true
+                visible = false;
+                searchLabel.visible = true;
             }
         }
 
@@ -253,7 +253,7 @@ PlasmaCore.Dialog {
             snapMode: ListView.SnapOneItem
             cacheBuffer: (cellSize * 6) * count
 
-            currentIndex: plasmoid.configuration.showFavoritesFirst ? 0 : 1
+            currentIndex: (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1
 
             model: rootModel.modelForRow(0)
 
@@ -270,7 +270,7 @@ PlasmaCore.Dialog {
             }
 
             onModelChanged: {
-                currentIndex = plasmoid.configuration.showFavoritesFirst ? 0 : 1;
+                currentIndex = (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1;
             }
 
             onFlickingChanged: {
@@ -326,7 +326,7 @@ PlasmaCore.Dialog {
 
                     dragEnabled: (index == 0)
 
-                    model: searching ? runnerModel.modelForRow(index) : rootModel.modelForRow(0).modelForRow(index)
+                    model: searching ? runnerModel.modelForRow(0) : rootModel.modelForRow(0).modelForRow(0)
 
                     onCurrentIndexChanged: {
                         if (currentIndex != -1 && !searching) {
