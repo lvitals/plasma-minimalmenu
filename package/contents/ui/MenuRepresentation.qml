@@ -412,6 +412,7 @@ PlasmaCore.Dialog {
             bottomMargin: units.largeSpacing
             horizontalCenter: parent.horizontalCenter
         }
+        interactive: false
 
         delegate: Item {
             width: units.iconSizes.small
