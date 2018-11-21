@@ -29,7 +29,6 @@ import org.kde.plasma.private.kicker 0.1 as Kicker
 
 PlasmaCore.Dialog {
     id: root
-
     objectName: "popupWindow"
     flags: Qt.WindowStaysOnTopHint
     location: PlasmaCore.Types.Floating
@@ -136,17 +135,18 @@ PlasmaCore.Dialog {
         Layout.maximumWidth: (cellSize * 6) + (2 * units.largeSpacing)
         Layout.minimumHeight: (cellSize * 4) + searchField.height + paginationBar.height + (3 * units.largeSpacing)
         Layout.maximumHeight: (cellSize * 4) + searchField.height + paginationBar.height + (3 * units.largeSpacing)
-
         focus: true
 
     PlasmaExtras.Heading {
         id: heading
-        anchors.left: parent.left
-        anchors.leftMargin: units.largeSpacing
-        anchors.top: parent.top
-        anchors.topMargin: units.smallSpacing
         level: 5
         text: i18n("Applications")
+        anchors {
+            left: parent.left
+            leftMargin: units.largeSpacing
+            top: parent.top
+            topMargin: units.smallSpacing
+        }
     }
 
     TextMetrics {
@@ -156,25 +156,29 @@ PlasmaCore.Dialog {
 
     PlasmaComponents.Label {
         id: searchLabel
-        anchors.left: parent.left
-        anchors.leftMargin: (2 * units.largeSpacing + heading.width)
-        anchors.right: parent.right
-        anchors.rightMargin: units.largeSpacing
-        anchors.baseline: heading.baseline
         text: i18n("Type to search...")
         opacity: 0.5
+        anchors {
+            left: parent.left
+            leftMargin: (2 * units.largeSpacing + heading.width)
+            right: parent.right
+            rightMargin: units.largeSpacing
+            baseline: heading.baseline
+        }
     }
     
     PlasmaComponents.TextField {
         id: searchField
-        anchors.left: parent.left
-        anchors.leftMargin: (2 * units.largeSpacing + heading.width)
-        anchors.right: parent.right
-        anchors.rightMargin: units.largeSpacing
-        anchors.baseline: heading.baseline
         placeholderText: i18n("Type to search...")
         clearButtonShown: true
         visible: false
+        anchors {
+            left: parent.left
+            leftMargin: (2 * units.largeSpacing + heading.width)
+            right: parent.right
+            rightMargin: units.largeSpacing
+            baseline: heading.baseline
+        }
         
         onTextChanged: {
             if (visible == false) {
@@ -225,7 +229,11 @@ PlasmaCore.Dialog {
 
     PlasmaExtras.ScrollArea {
         id: pageListScrollArea
-
+        frameVisible: false
+        width: (cellSize * 6)
+        focus: true
+        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+        verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
         anchors {
             left: parent.left
             leftMargin: units.largeSpacing
@@ -236,25 +244,13 @@ PlasmaCore.Dialog {
             bottom: paginationBar.top
         }
 
-        frameVisible: false
-        width: (cellSize * 6)
-
-        focus: true
-
-        horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-        verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
         ListView {
             id: pageList
-
             anchors.fill: parent
-
             orientation: Qt.Horizontal
             snapMode: ListView.SnapOneItem
             cacheBuffer: (cellSize * 6) * count
-
-            currentIndex: (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1
-
+            currentIndex: (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1
             model: rootModel.modelForRow(0)
 
             onCurrentIndexChanged: {
@@ -270,7 +266,7 @@ PlasmaCore.Dialog {
             }
 
             onModelChanged: {
-                currentIndex = (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1;
+                currentIndex = (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1;
             }
 
             onFlickingChanged: {
@@ -315,17 +311,12 @@ PlasmaCore.Dialog {
 
                 ItemGridView {
                     id: gridView
-
                     anchors.fill: parent
-
                     cellWidth: cellSize
                     cellHeight: cellSize
-
                     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
                     verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
                     dragEnabled: (index == 0)
-
                     model: searching ? runnerModel.modelForRow(0) : rootModel.modelForRow(0).modelForRow(index)
 
                     onCurrentIndexChanged: {
@@ -412,19 +403,15 @@ PlasmaCore.Dialog {
 
     ListView {
         id: paginationBar
-
+        width: model.count * units.iconSizes.small
+        height: units.iconSizes.small
+        orientation: Qt.Horizontal
+        model: rootModel.modelForRow(0)
         anchors {
             bottom: parent.bottom
             bottomMargin: units.largeSpacing
             horizontalCenter: parent.horizontalCenter
         }
-
-        width: model.count * units.iconSizes.small
-        height: units.iconSizes.small
-
-        orientation: Qt.Horizontal
-
-        model: rootModel.modelForRow(0)
 
         delegate: Item {
             width: units.iconSizes.small
