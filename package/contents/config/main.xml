@@ -60,5 +60,13 @@
     <entry name="wrapScroll" type="Bool">
         <default>false</default>
     </entry>
+
+    <entry name="animateScroll" type="Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="animateScrollSpeed" type="Int">
+        <default>350</default>
+    </entry>
   </group>
 </kcfg>

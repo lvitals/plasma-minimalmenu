@@ -84,6 +84,10 @@ PlasmaCore.Dialog {
         pageListScrollArea.focus = true;
         pageList.currentIndex = plasmoid.configuration.showFavoritesFirst ? 0 : 1;
         pageList.currentItem.itemGrid.currentIndex = -1;
+
+        // Use positionViewAtIndex, to force an instant page switch
+        // even if animations are enabled.
+        pageList.positionViewAtIndex(pageList.currentIndex, ListView.Contain);
     }
 
     function popupPosition(width, height) {
@@ -253,8 +257,22 @@ PlasmaCore.Dialog {
             currentIndex: (searching || plasmoid.configuration.showFavoritesFirst) ? 0 : 1
             model: rootModel.modelForRow(0)
 
+
+            /*   Animate scroll speed slider has values in range 150-550, and steps of 100.
+             *   700 - value = animation speed in msec.
+             *
+             *   0: 150
+             *   1: 250
+             *   2: 350
+             *   3: 450
+             *   4: 550
+             */
+            highlightMoveDuration: (700 - plasmoid.configuration.animateScrollSpeed)
+
             onCurrentIndexChanged: {
-                positionViewAtIndex(currentIndex, ListView.Contain);
+                if (!plasmoid.configuration.animateScroll) {
+                    positionViewAtIndex(currentIndex, ListView.Contain);
+                }
             }
 
             onCurrentItemChanged: {
@@ -290,17 +308,14 @@ PlasmaCore.Dialog {
                     if (newIndex === pageList.count) {
                         newIndex = plasmoid.configuration.wrapScroll ? 0 : pageList.currentIndex;
                     }
-
-                    pageList.currentIndex = newIndex;
                 } else {
                     newIndex = pageList.currentIndex - 1;
 
                     if (newIndex < 0) {
                         newIndex = plasmoid.configuration.wrapScroll ? pageList.count - 1 : pageList.currentIndex;
                     }
-
-                    pageList.currentIndex = newIndex;
                 }
+                pageList.currentIndex = newIndex;
             }
 
             delegate: Item {

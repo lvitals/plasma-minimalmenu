@@ -38,6 +38,9 @@ Item {
     property alias cfg_showFavoritesFirst: showFavoritesFirst.checked
     property alias cfg_wrapScroll: wrapScroll.checked
 
+    property alias cfg_animateScroll: animateScroll.checked
+    property alias cfg_animateScrollSpeed: animateScrollSpeed.value
+
     property alias cfg_useExtraRunners: useExtraRunners.checked
     
     ColumnLayout {
@@ -126,7 +129,48 @@ Item {
                 CheckBox {
                     id: wrapScroll
                     
-                    text: i18n("Page scrolling wraps around")
+                    text: i18n("Page switching wraps around")
+                }
+            }
+        }
+
+        GroupBox {
+            Layout.fillWidth: true
+
+            title: i18n("Effects")
+
+            flat: true
+
+            ColumnLayout {
+                CheckBox {
+                    id: animateScroll
+
+                    text: i18n("Animate page switching")
+                }
+
+                RowLayout {
+                    visible: animateScroll.checked
+                    Label {
+                        text: i18n("Slow")
+                    }
+
+                    Slider {
+                        id: animateScrollSpeed
+
+                        maximumValue: 550
+
+                        minimumValue: 150
+
+                        stepSize: 100
+
+                        tickmarksEnabled: true
+
+                        wheelEnabled: false
+                    }
+
+                    Label {
+                        text: i18n("Fast")
+                    }
                 }
             }
         }
