@@ -286,7 +286,7 @@ FocusScope {
                         if (currentCol() !== 0) {
                             event.accepted = true;
                             moveCurrentIndexLeft();
-                        } else {
+                        } else if (pageList.currentIndex != 0 || plasmoid.configuration.wrapScroll) {
                             itemGrid.keyNavLeft();
                         }
                     }
@@ -302,7 +302,7 @@ FocusScope {
                         if (currentCol() !== columns - 1 && currentIndex != count - 1) {
                             event.accepted = true;
                             moveCurrentIndexRight();
-                        } else {
+                        } else if (pageList.currentIndex != pageList.count - 1 || plasmoid.configuration.wrapScroll) {
                             itemGrid.keyNavRight();
                         }
                     }
