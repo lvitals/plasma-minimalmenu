@@ -126,7 +126,7 @@ Item {
                 CheckBox {
                     id: wrapScroll
                     
-                    text: i18n("Wrap page scrolling")
+                    text: i18n("Page scrolling wraps around")
                 }
             }
         }
