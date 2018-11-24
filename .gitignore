@@ -20,3 +20,5 @@ package/contents/ui/main\.qmlc
 package/COPYING
 
 package/ChangeLog
+
+CMakeLists\.txt\.user
