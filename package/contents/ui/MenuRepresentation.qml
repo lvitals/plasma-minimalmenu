@@ -108,7 +108,12 @@ PlasmaCore.Dialog {
         var horizMidPoint;
         var vertMidPoint;
 
-        if (plasmoid.location === PlasmaCore.Types.BottomEdge) {
+        if (plasmoid.configuration.showAtCenter) {
+            horizMidPoint = screen.x + (screen.width / 2);
+            vertMidPoint = screen.y + (screen.height / 2);
+            x = horizMidPoint - width / 2;
+            y = vertMidPoint - height / 2;
+        } else if (plasmoid.location === PlasmaCore.Types.BottomEdge) {
             horizMidPoint = screen.x + (screen.width / 2);
             appletTopLeft = parent.mapToGlobal(0, 0);
             x = (appletTopLeft.x < horizMidPoint) ? screen.x + offset : (screen.x + screen.width) - width - offset;

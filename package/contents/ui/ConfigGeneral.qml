@@ -40,6 +40,7 @@ Item {
 
     property alias cfg_animateScroll: animateScroll.checked
     property alias cfg_animateScrollSpeed: animateScrollSpeed.value
+    property alias cfg_showAtCenter: showAtCenter.checked
 
     property alias cfg_useExtraRunners: useExtraRunners.checked
     
@@ -130,6 +131,12 @@ Item {
                     id: wrapScroll
                     
                     text: i18n("Page switching wraps around")
+                }
+
+                CheckBox {
+                    id: showAtCenter
+
+                    text: i18n("Position launcher at the center of the screen")
                 }
             }
         }
