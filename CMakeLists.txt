@@ -23,4 +23,4 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     Plasma
 )
 
-plasma_install_package(package com.gitlab.jnuutinen.minimalmenu)
+plasma_install_package(package com.gitlab.lvitals.minimalmenu)

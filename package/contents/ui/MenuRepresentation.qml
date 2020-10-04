@@ -117,12 +117,12 @@ PlasmaCore.Dialog {
             horizMidPoint = screen.x + (screen.width / 2);
             appletTopLeft = parent.mapToGlobal(0, 0);
             x = (appletTopLeft.x < horizMidPoint) ? screen.x + offset : (screen.x + screen.width) - width - offset;
-            y = screen.y + screen.height - height - offset - panelSvg.margins.top;
+            y = screen.y + screen.height - panelSvg.margins.top - height - offset;
         } else if (plasmoid.location === PlasmaCore.Types.TopEdge) {
             horizMidPoint = screen.x + (screen.width / 2);
             var appletBottomLeft = parent.mapToGlobal(0, parent.height);
             x = (appletBottomLeft.x < horizMidPoint) ? screen.x + offset : (screen.x + screen.width) - width - offset;
-            y = parent.height + panelSvg.margins.bottom + offset;
+            y = screen.y + parent.height + panelSvg.margins.bottom - offset;
         } else if (plasmoid.location === PlasmaCore.Types.LeftEdge) {
             vertMidPoint = screen.y + (screen.height / 2);
             appletTopLeft = parent.mapToGlobal(0, 0);
